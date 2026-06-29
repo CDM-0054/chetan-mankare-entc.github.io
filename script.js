@@ -177,14 +177,20 @@ function toggleAdmin() { isAdmin ? adminLogout() : showAdminPrompt(); }
 async function renderSubjects() {
   const container = document.getElementById('subjectsContainer');
   if (!container) return;
+  
   const progress = await getProgress();
+  console.log('📊 Progress Data:', progress); // Debug log
   
   container.innerHTML = subjectsData.map((sub) => {
     const subProgress = progress[sub.code] || sub.chapters.map(() => false);
     const done = subProgress.filter(Boolean).length;
     const total = sub.chapters.length;
     const pct = Math.round((done / total) * 100);
-    const dots = subProgress.map(status => `<span class="dot ${status ? 'done' : ''}"></span>`).join('');
+    
+    // Generate chapter dots
+    const dots = subProgress.map(status => 
+      `<span class="dot ${status ? 'done' : ''}"></span>`
+    ).join('');
     
     return `
       <a href="subjects/${sub.code.toLowerCase()}.html" class="subject-card-link">
@@ -198,7 +204,9 @@ async function renderSubjects() {
               <span class="label">Progress</span>
               <span class="pct">${pct}%</span>
             </div>
-            <div class="mini-bar"><div class="fill" style="width: ${pct}%;"></div></div>
+            <div class="mini-bar">
+              <div class="fill" style="width: ${pct}%;"></div>
+            </div>
             <div class="chapters-preview">${dots}</div>
           </div>
           <div class="subject-card-footer">
@@ -213,7 +221,6 @@ async function renderSubjects() {
   await updateGraph(progress);
   checkAdmin();
 }
-
 // ─── UPDATE GRAPH ───
 async function updateGraph(progress) {
   const graph = document.getElementById('progressGraph');
