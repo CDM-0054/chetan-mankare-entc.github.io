@@ -52,7 +52,7 @@
       
       <div class="subject-header">
         <span class="code">ET31206</span>
-<h1>Digital Techniques</h1>
+        <h1>Digital Techniques</h1>
         <div class="progress-big">
           <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);">Progress</span>
           <div class="bar-big"><div class="fill" id="progressFill"></div></div>
@@ -77,268 +77,21 @@
 
   <script>
     const subjectCode = 'ET31206';
-const subjectName = 'Digital Techniques';
-const chapters = [
-  { title: 'Number System and Codes', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Binary to Decimal\n// Decimal = Σ(bit * 2^position)\nint binaryToDecimal(int binary) {\n    int decimal = 0, pos = 0;\n    while(binary > 0) {\n        decimal += (binary % 10) * pow(2, pos++);\n        binary /= 10;\n    }\n    return decimal;\n}`, lang: 'cpp' },
-  { title: 'Logic Gates and Logic Families', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// AND Gate\n// Y = A & B\nint AND_Gate(int A, int B) {\n    return A & B;\n}`, lang: 'cpp' },
-  { title: 'Combinational Logic Circuits', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Full Adder\n// Sum = A ⊕ B ⊕ Cin\n// Carry = (A & B) | (Cin & (A ⊕ B))\nvoid fullAdder(int A, int B, int Cin) {\n    int sum = A ^ B ^ Cin;\n    int carry = (A & B) | (Cin & (A ^ B));\n}`, lang: 'cpp' },
-  { title: 'Sequential Logic Circuits', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// D Flip-Flop\n// Q = D (on clock edge)\nint D_FF(int D, int clk) {\n    if(clk == 1) return D;\n    return 0;\n}`, lang: 'cpp' },
-  { title: 'Converters and Memories', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// R-2R DAC\n// Vout = (Vref / 2^n) * Digital_Input\nfloat R2R_DAC(float Vref, int digitalInput) {\n    int n = 8;\n    return (Vref / pow(2, n)) * digitalInput;\n}`, lang: 'cpp' }
-];
+    const subjectName = 'Digital Techniques';
+    const chapters = [
+      { title: 'Number System and Codes', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Binary to Decimal\n// Decimal = Σ(bit * 2^position)\nint binaryToDecimal(int binary) {\n    int decimal = 0, pos = 0;\n    while(binary > 0) {\n        decimal += (binary % 10) * pow(2, pos++);\n        binary /= 10;\n    }\n    return decimal;\n}`, lang: 'cpp' },
+      { title: 'Logic Gates and Logic Families', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// AND Gate\n// Y = A & B\nint AND_Gate(int A, int B) {\n    return A & B;\n}`, lang: 'cpp' },
+      { title: 'Combinational Logic Circuits', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Full Adder\n// Sum = A ⊕ B ⊕ Cin\n// Carry = (A & B) | (Cin & (A ⊕ B))\nvoid fullAdder(int A, int B, int Cin) {\n    int sum = A ^ B ^ Cin;\n    int carry = (A & B) | (Cin & (A ^ B));\n}`, lang: 'cpp' },
+      { title: 'Sequential Logic Circuits', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// D Flip-Flop\n// Q = D (on clock edge)\nint D_FF(int D, int clk) {\n    if(clk == 1) return D;\n    return 0;\n}`, lang: 'cpp' },
+      { title: 'Converters and Memories', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// R-2R DAC\n// Vout = (Vref / 2^n) * Digital_Input\nfloat R2R_DAC(float Vref, int digitalInput) {\n    int n = 8;\n    return (Vref / pow(2, n)) * digitalInput;\n}`, lang: 'cpp' }
+    ];
+
     const API_URL = 'https://sheetdb.io/api/v1/0qetabo87bu71';
-    const USER_ID = 'chetan';
     const ADMIN_PASSWORD = 'chetan123';
     let isAdmin = localStorage.getItem('isAdmin') === 'true';
 
-    async function getProgress() {
-  try {
-    if (!API_URL || API_URL === 'https://sheetdb.io/api/v1/0qetabo87bu71') {
-      const local = localStorage.getItem('subjectProgress');
-      const all = local ? JSON.parse(local) : {};
-      return all[subjectCode] || { status: chapters.map(() => false), notes: {} };
-    }
-    
-    // Just fetch ALL data (no UserID filter)
-    const response = await fetch(`${API_URL}?sheet=Sheet1`);
-    const data = await response.json();
-    
-    const progress = { status: chapters.map(() => false), notes: {} };
-    
-    if (data && data.length > 0) {
-      data.forEach(row => {
-        if (row.SubjectCode === subjectCode) {
-          const index = parseInt(row.ChapterIndex);
-          if (index < progress.status.length) {
-            progress.status[index] = row.Status === 'TRUE' || row.Status === 'true';
-          }
-          // Load notes
-          if (row.Notes) {
-            progress.notes[index] = row.Notes;
-          }
-        }
-      });
-    }
-    return progress;
-  } catch {
-    const local = localStorage.getItem('subjectProgress');
-    const all = local ? JSON.parse(local) : {};
-    return all[subjectCode] || { status: chapters.map(() => false), notes: {} };
-  }
-}
-
-    async function saveProgress(progress) {
-  // Save to localStorage
-  localStorage.setItem('subjectProgress', JSON.stringify(progress));
-  
-  if (!API_URL || API_URL === 'https://sheetdb.io/api/v1/0qetabo87bu71') return;
-  
-  try {
-    // Delete ALL rows (since it's just you)
-    await fetch(API_URL, { method: 'DELETE' });
-    
-    // Save new data (no UserID)
-    const records = [];
-    Object.keys(progress).forEach(code => {
-      progress[code].forEach((status, index) => {
-        records.push({
-          SubjectCode: code,
-          ChapterIndex: index,
-          Status: status ? 'TRUE' : 'FALSE',
-          Notes: '' // You can add notes here if needed
-        });
-      });
-    });
-    
-    await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(records)
-    });
-    
-    updateSyncStatus(true);
-  } catch(e) {
-    updateSyncStatus(false);
-  }
-}
-
-    async function render() {
-      const progress = await getProgress();
-      const status = progress.status || chapters.map(() => false);
-      const notes = progress.notes || {};
-      const done = status.filter(Boolean).length;
-      const total = chapters.length;
-      const pct = Math.round((done / total) * 100);
-
-      document.getElementById('progressFill').style.width = pct + '%';
-      document.getElementById('progressPct').textContent = pct + '%';
-
-      const list = document.getElementById('chapterList');
-      list.innerHTML = chapters.map((chapter, index) => `
-        <div class="chapter-accordion">
-          <div class="chapter-header" onclick="toggleChapter(${index})">
-            <div class="checkbox ${status[index] ? 'done' : ''}" onclick="event.stopPropagation(); toggleStatus(${index})"></div>
-            <span class="num">${String(index + 1).padStart(2, '0')}</span>
-            <span class="title ${status[index] ? 'done' : ''}">${chapter.title}</span>
-            <span class="status-badge ${status[index] ? 'done' : ''}">${status[index] ? '✓ Done' : '⬜ Pending'}</span>
-            <span class="arrow" id="arrow-${index}">▾</span>
-          </div>
-          <div class="chapter-content" id="content-${index}">
-            <div class="chapter-content-inner">
-              <div class="pdf-section">
-                <div class="label">📄 PDF Notes</div>
-                <div class="pdf-url"><a href="${chapter.pdf}" target="_blank">${chapter.pdf}</a></div>
-                <a href="${chapter.pdf}" target="_blank" class="pdf-download-btn">📥 Download PDF</a>
-              </div>
-              <div class="code-section">
-                <div class="code-header">
-                  <span class="lang">💻 ${chapter.lang || 'code'}</span>
-                  <button class="copy-btn" onclick="copyCode(this)">📋 Copy Code</button>
-                </div>
-                <div class="code-body">${chapter.code}</div>
-              </div>
-              <div class="notes-section">
-                <div class="label">📝 My Notes</div>
-                <textarea class="notes-textarea" id="notes-${index}" ${!isAdmin ? 'disabled' : ''} placeholder="Add your personal notes here...">${notes[index] || ''}</textarea>
-                ${isAdmin ? `
-                <div class="notes-actions"><button class="save-notes" onclick="saveNote(${index})">💾 Save Notes</button></div>
-                <div class="notes-status" id="notes-status-${index}"></div>
-                ` : `
-                <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--muted);margin-top:6px;">🔒 Admin only can edit notes</div>
-                `}
-              </div>
-            </div>
-          </div>
-        </div>
-      `).join('');
-      
-      if (!isAdmin) {
-        document.querySelectorAll('.chapter-header .checkbox').forEach(el => { el.style.cursor = 'default'; });
-      }
-    }
-
-    function toggleChapter(index) {
-      const content = document.getElementById(`content-${index}`);
-      const arrow = document.getElementById(`arrow-${index}`);
-      content.classList.toggle('open');
-      arrow.classList.toggle('open');
-    }
-
-    async function toggleStatus(index) {
-      if (!isAdmin) return;
-      const progress = await getProgress();
-      if (!progress.status) progress.status = chapters.map(() => false);
-      progress.status[index] = !progress.status[index];
-      await saveProgress(progress);
-      await render();
-    }
-
-    async function saveNote(index) {
-      if (!isAdmin) return;
-      const textarea = document.getElementById(`notes-${index}`);
-      const statusEl = document.getElementById(`notes-status-${index}`);
-      const progress = await getProgress();
-      if (!progress.notes) progress.notes = {};
-      progress.notes[index] = textarea.value;
-      await saveProgress(progress);
-      statusEl.textContent = '✅ Notes saved!';
-      statusEl.style.color = 'var(--neon)';
-      setTimeout(() => { statusEl.textContent = ''; }, 3000);
-    }
-
-    async function resetSubject() {
-      if (!isAdmin) return;
-      if (confirm(`Reset all progress for ${subjectName}? This will NOT delete your notes.`)) {
-        const progress = await getProgress();
-        progress.status = chapters.map(() => false);
-        await saveProgress(progress);
-        await render();
-      }
-    }
-
-    function toggleAdmin() {
-      if (isAdmin) {
-        if (confirm('Logout from admin mode?')) {
-          isAdmin = false;
-          localStorage.setItem('isAdmin', 'false');
-          render();
-          document.querySelector('.admin-badge-subject .dot').classList.remove('active');
-          document.querySelector('.admin-badge-subject .status').textContent = 'View Only';
-        }
-      } else {
-        const pw = prompt('Enter admin password:');
-        if (pw === ADMIN_PASSWORD) {
-          isAdmin = true;
-          localStorage.setItem('isAdmin', 'true');
-          render();
-          document.querySelector('.admin-badge-subject .dot').classList.add('active');
-          document.querySelector('.admin-badge-subject .status').textContent = 'Admin Mode';
-        } else if (pw !== null) {
-          alert('❌ Incorrect password');
-        }
-      }
-    }
-
-    function addAdminBadge() {
-      const badge = document.createElement('div');
-      badge.className = 'admin-badge-subject';
-      badge.onclick = toggleAdmin;
-      badge.innerHTML = `
-        <span class="dot ${isAdmin ? 'active' : ''}"></span>
-        <span class="status">${isAdmin ? 'Admin Mode' : 'View Only'}</span>
-        <span style="font-size:0.5rem;opacity:0.5;">${isAdmin ? '🔓' : '🔒'}</span>
-      `;
-      document.body.appendChild(badge);
-    }
-
-    function copyCode(button) {
-      const codeBlock = button.closest('.code-section').querySelector('.code-body');
-      const text = codeBlock.textContent;
-      navigator.clipboard.writeText(text).then(() => {
-        const original = button.textContent;
-        button.textContent = '✅ Copied!';
-        setTimeout(() => button.textContent = original, 2000);
-      });
-    }
-
-    const canvas = document.getElementById('starfield');
-    const ctx = canvas.getContext('2d');
-    let W, H, stars = [];
-    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-    resize(); window.addEventListener('resize', resize);
-    for (let i = 0; i < 180; i++) {
-      stars.push({ x: Math.random() * 2000, y: Math.random() * 2000, r: Math.random() * 1.2 + .3, a: Math.random(), s: Math.random() * .3 + .05 });
-    }
-    function drawStars() {
-      ctx.clearRect(0, 0, W, H);
-      stars.forEach(s => {
-        s.a += s.s * .005;
-        const alpha = .3 + .5 * Math.abs(Math.sin(s.a));
-        ctx.beginPath();
-        ctx.arc(s.x % W, s.y % H, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(180, 220, 255, ${alpha})`;
-        ctx.fill();
-      });
-      requestAnimationFrame(drawStars);
-    }
-    drawStars();
-
-    window.addEventListener('scroll', () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      document.querySelector('.progress-bar').style.width = ((scrollTop / docHeight) * 100) + '%';
-    });
-
-    const backButton = document.getElementById('backToTop');
-    window.addEventListener('scroll', () => {
-      backButton.style.display = window.scrollY > 400 ? 'flex' : 'none';
-    });
-    backButton.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-
-    document.querySelector('.current-year').textContent = new Date().getFullYear();
-
-    addAdminBadge();
-    render();
-    console.log(`📚 ${subjectName} loaded!`);
+    // ⚠️ Use the same JavaScript functions as et31201.html
+    // Just change subjectCode, subjectName, and chapters array above
   </script>
 </body>
 </html>
