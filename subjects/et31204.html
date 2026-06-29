@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Electrical Circuits — Chetan Mankare</title>
+  <title>Linear Integrated Circuits — Chetan Mankare</title>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
   
   <!-- ════════════════════════════════════════════ -->
@@ -555,16 +555,15 @@
 
   <script>
     // ─── SUBJECT DATA ───
-    const subjectCode = 'ET31201';
-    const subjectName = 'Electrical Circuits and Networks';
-    const chapters = [
-      { title: 'Laws and Definition', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Kirchhoff's Current Law (KCL)\n// Sum of currents entering = Sum leaving\nint calculateCurrent(int voltage, int resistance) {\n    return voltage / resistance;\n}`, lang: 'cpp' },
-      { title: 'Mesh and Nodal Analysis', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Mesh Analysis\nint meshCurrent1 = 0, meshCurrent2 = 0;\nfor(int i=0; i<10; i++) {\n    meshCurrent1 += voltage / resistance;\n}`, lang: 'cpp' },
-      { title: 'Network Theorems', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Thevenin's Theorem\nint theveninVoltage = openCircuitVoltage;\nint theveninResistance = equivalentResistance;`, lang: 'cpp' },
-      { title: 'Two Port Network', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Z Parameters\nint z11 = 10, z12 = 5;\nint z21 = 5, z22 = 10;`, lang: 'cpp' },
-      { title: 'Resonant Circuit', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Resonant Frequency\nfloat resonantFrequency(float L, float C) {\n    return 1 / (2 * 3.14159 * sqrt(L * C));\n}`, lang: 'cpp' },
-      { title: 'Filter and Attenuator', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Low Pass Filter\nfloat cutoffFrequency(float R, float C) {\n    return 1 / (2 * 3.14159 * R * C);\n}`, lang: 'cpp' }
-    ];
+    const subjectCode = 'ET31204';
+const subjectName = 'Linear Integrated Circuits';
+const chapters = [
+  { title: 'Fundamentals of Op-Amp', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Non-Inverting Amplifier\n// Vout = Vin * (1 + Rf/R1)\nfloat nonInvertingAmp(float Vin, float Rf, float R1) {\n    return Vin * (1 + Rf/R1);\n}`, lang: 'cpp' },
+  { title: 'Op-Amp Configuration', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Inverting Amplifier\n// Vout = -Vin * (Rf/R1)\nfloat invertingAmp(float Vin, float Rf, float R1) {\n    return -Vin * (Rf/R1);\n}`, lang: 'cpp' },
+  { title: 'Linear Application of Op-Amp', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Summing Amplifier\n// Vout = -(Rf/R1*V1 + Rf/R2*V2 + ...)\nfloat summingAmp(float V[], float Rf, float R[]) {\n    float sum = 0;\n    for(int i=0; i<3; i++) sum += Rf/R[i] * V[i];\n    return -sum;\n}`, lang: 'cpp' },
+  { title: 'Filters and Oscillators', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Wien Bridge Oscillator\n// Frequency: f = 1 / (2πRC)\nfloat weinBridgeFreq(float R, float C) {\n    return 1 / (2 * PI * R * C);\n}`, lang: 'cpp' },
+  { title: 'Timers', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// 555 Timer - Astable Mode\n// Frequency: f = 1.44 / ((R1 + 2*R2) * C)\nfloat astableFreq(float R1, float R2, float C) {\n    return 1.44 / ((R1 + 2*R2) * C);\n}`, lang: 'cpp' }
+];
 
     const API_URL = 'https://sheetdb.io/api/v1/0qetabo87bu71';
     const ADMIN_PASSWORD = 'chetan123';
