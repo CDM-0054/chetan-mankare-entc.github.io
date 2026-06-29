@@ -42,30 +42,54 @@ console.log('📊 Connected to SheetDB:', API_URL ? 'Yes' : 'No (using localStor
 // ─── GET PROGRESS ───
 async function getProgress() {
   try {
+    console.log('📊 Fetching progress from SheetDB...');
+    
+    // Check if API is available
     if (!API_URL || API_URL === 'https://sheetdb.io/api/v1/0qetabo87bu71') {
+      console.warn('⚠️ Using localStorage (SheetDB not configured)');
       const local = localStorage.getItem('subjectProgress');
       return local ? JSON.parse(local) : getDefaultProgress();
     }
     
-    // Just fetch ALL data (no UserID filter needed)
+    // Fetch from SheetDB
     const response = await fetch(`${API_URL}?sheet=Sheet1`);
-    const data = await response.json();
     
-    const progress = getDefaultProgress();
-    
-    if (data && data.length > 0) {
-      data.forEach(row => {
-        if (progress[row.SubjectCode]) {
-          progress[row.SubjectCode][parseInt(row.ChapterIndex)] = row.Status === 'TRUE' || row.Status === 'true';
-        }
-      });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
     
+    const data = await response.json();
+    console.log('📊 Data from SheetDB:', data);
+    
+    if (!data || data.length === 0) {
+      console.warn('⚠️ No data found in SheetDB');
+      return getDefaultProgress();
+    }
+    
+    const progress = getDefaultProgress();
+    data.forEach(row => {
+      if (progress[row.SubjectCode]) {
+        const index = parseInt(row.ChapterIndex);
+        if (index < progress[row.SubjectCode].length) {
+          progress[row.SubjectCode][index] = row.Status === 'TRUE' || row.Status === 'true';
+        }
+      }
+    });
+    
+    // Save to localStorage as backup
     localStorage.setItem('subjectProgress', JSON.stringify(progress));
+    console.log('✅ Progress loaded from SheetDB');
     return progress;
+    
   } catch (error) {
+    console.error('❌ Error fetching from SheetDB:', error);
+    // Fallback to localStorage
     const local = localStorage.getItem('subjectProgress');
-    return local ? JSON.parse(local) : getDefaultProgress();
+    if (local) {
+      console.log('📊 Using localStorage backup');
+      return JSON.parse(local);
+    }
+    return getDefaultProgress();
   }
 }
 
