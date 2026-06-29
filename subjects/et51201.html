@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Electrical Circuits — Chetan Mankare</title>
+  <title>Python Programming — Chetan Mankare</title>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
   
   <!-- ════════════════════════════════════════════ -->
@@ -555,16 +555,16 @@
 
   <script>
     // ─── SUBJECT DATA ───
-    const subjectCode = 'ET31201';
-    const subjectName = 'Electrical Circuits and Networks';
-    const chapters = [
-      { title: 'Laws and Definition', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Kirchhoff's Current Law (KCL)\n// Sum of currents entering = Sum leaving\nint calculateCurrent(int voltage, int resistance) {\n    return voltage / resistance;\n}`, lang: 'cpp' },
-      { title: 'Mesh and Nodal Analysis', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Mesh Analysis\nint meshCurrent1 = 0, meshCurrent2 = 0;\nfor(int i=0; i<10; i++) {\n    meshCurrent1 += voltage / resistance;\n}`, lang: 'cpp' },
-      { title: 'Network Theorems', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Thevenin's Theorem\nint theveninVoltage = openCircuitVoltage;\nint theveninResistance = equivalentResistance;`, lang: 'cpp' },
-      { title: 'Two Port Network', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Z Parameters\nint z11 = 10, z12 = 5;\nint z21 = 5, z22 = 10;`, lang: 'cpp' },
-      { title: 'Resonant Circuit', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Resonant Frequency\nfloat resonantFrequency(float L, float C) {\n    return 1 / (2 * 3.14159 * sqrt(L * C));\n}`, lang: 'cpp' },
-      { title: 'Filter and Attenuator', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `// Low Pass Filter\nfloat cutoffFrequency(float R, float C) {\n    return 1 / (2 * 3.14159 * R * C);\n}`, lang: 'cpp' }
-    ];
+    const subjectCode = 'ET51201';
+const subjectName = 'Python Programming';
+const chapters = [
+  { title: 'Fundamentals of Python', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `# Variables and Data Types\nname = "Chetan"\nage = 20\nmarks = [85, 90, 78, 92]\nprint(f"Hello {name}, you are {age} years old")`, lang: 'python' },
+  { title: 'Control Flow Statements', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `# If-Else and Loops\ndef find_max(numbers):\n    max_num = numbers[0]\n    for num in numbers:\n        if num > max_num:\n            max_num = num\n    return max_num`, lang: 'python' },
+  { title: 'Data Structures in Python', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `# Lists and Dictionaries\nstudents = [{"name": "Chetan", "age": 20}, {"name": "Raj", "age": 21}]\nfor student in students:\n    print(f"{student['name']} is {student['age']} years old")`, lang: 'python' },
+  { title: 'File I/O Handling', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `# File Operations\nwith open('data.txt', 'r') as file:\n    content = file.read()\n    lines = content.split('\\n')\n    print(f"Total lines: {len(lines)}")`, lang: 'python' },
+  { title: 'Functions and Packages', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `# Using NumPy\nimport numpy as np\narr = np.array([1, 2, 3, 4, 5])\nprint(f"Mean: {np.mean(arr)}, Std: {np.std(arr)}")`, lang: 'python' },
+  { title: 'Automation in Python', pdf: 'https://drive.google.com/file/d/PLACEHOLDER/view', code: `# File Organizer\nimport os, shutil\nfor file in os.listdir('.'):\n    if file.endswith('.pdf'):\n        shutil.move(file, 'pdfs/' + file)\n    elif file.endswith('.py'):\n        shutil.move(file, 'scripts/' + file)`, lang: 'python' }
+];
 
     const API_URL = 'https://sheetdb.io/api/v1/0qetabo87bu71';
     const ADMIN_PASSWORD = 'chetan123';
