@@ -88,80 +88,55 @@
     ];
 
     const API_URL = 'https://sheetdb.io/api/v1/0qetabo87bu71';
-    const USER_ID = 'chetan';
     const ADMIN_PASSWORD = 'chetan123';
     let isAdmin = localStorage.getItem('isAdmin') === 'true';
 
     async function getProgress() {
-  try {
-    if (!API_URL || API_URL === 'https://sheetdb.io/api/v1/0qetabo87bu71') {
-      const local = localStorage.getItem('subjectProgress');
-      const all = local ? JSON.parse(local) : {};
-      return all[subjectCode] || { status: chapters.map(() => false), notes: {} };
-    }
-    
-    // Just fetch ALL data (no UserID filter)
-    const response = await fetch(`${API_URL}?sheet=Sheet1`);
-    const data = await response.json();
-    
-    const progress = { status: chapters.map(() => false), notes: {} };
-    
-    if (data && data.length > 0) {
-      data.forEach(row => {
-        if (row.SubjectCode === subjectCode) {
-          const index = parseInt(row.ChapterIndex);
-          if (index < progress.status.length) {
-            progress.status[index] = row.Status === 'TRUE' || row.Status === 'true';
-          }
-          // Load notes
-          if (row.Notes) {
-            progress.notes[index] = row.Notes;
-          }
+      try {
+        const response = await fetch(`${API_URL}?sheet=Sheet1`);
+        const data = await response.json();
+        const progress = { status: chapters.map(() => false), notes: {} };
+        if (data && data.length > 0) {
+          data.forEach(row => {
+            if (row.SubjectCode === subjectCode) {
+              const index = parseInt(row.ChapterIndex);
+              if (index < progress.status.length) {
+                progress.status[index] = row.Status === 'TRUE' || row.Status === 'true';
+              }
+              if (row.Notes) {
+                progress.notes[index] = row.Notes;
+              }
+            }
+          });
         }
-      });
+        return progress;
+      } catch {
+        const local = localStorage.getItem('subjectProgress');
+        const all = local ? JSON.parse(local) : {};
+        return all[subjectCode] || { status: chapters.map(() => false), notes: {} };
+      }
     }
-    return progress;
-  } catch {
-    const local = localStorage.getItem('subjectProgress');
-    const all = local ? JSON.parse(local) : {};
-    return all[subjectCode] || { status: chapters.map(() => false), notes: {} };
-  }
-}
 
     async function saveProgress(progress) {
-  // Save to localStorage
-  localStorage.setItem('subjectProgress', JSON.stringify(progress));
-  
-  if (!API_URL || API_URL === 'https://sheetdb.io/api/v1/0qetabo87bu71') return;
-  
-  try {
-    // Delete ALL rows (since it's just you)
-    await fetch(API_URL, { method: 'DELETE' });
-    
-    // Save new data (no UserID)
-    const records = [];
-    Object.keys(progress).forEach(code => {
-      progress[code].forEach((status, index) => {
-        records.push({
-          SubjectCode: code,
+      const local = localStorage.getItem('subjectProgress');
+      const all = local ? JSON.parse(local) : {};
+      all[subjectCode] = progress;
+      localStorage.setItem('subjectProgress', JSON.stringify(all));
+      try {
+        await fetch(API_URL, { method: 'DELETE' });
+        const records = progress.status.map((status, index) => ({
+          SubjectCode: subjectCode,
           ChapterIndex: index,
           Status: status ? 'TRUE' : 'FALSE',
-          Notes: '' // You can add notes here if needed
+          Notes: progress.notes && progress.notes[index] ? progress.notes[index] : ''
+        }));
+        await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(records)
         });
-      });
-    });
-    
-    await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(records)
-    });
-    
-    updateSyncStatus(true);
-  } catch(e) {
-    updateSyncStatus(false);
-  }
-}
+      } catch(e) {}
+    }
 
     async function render() {
       const progress = await getProgress();
@@ -249,7 +224,7 @@
 
     async function resetSubject() {
       if (!isAdmin) return;
-      if (confirm(`Reset all progress for ${subjectName}? This will NOT delete your notes.`)) {
+      if (confirm(`Reset all progress for ${subjectName}?`)) {
         const progress = await getProgress();
         progress.status = chapters.map(() => false);
         await saveProgress(progress);
