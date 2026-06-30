@@ -261,10 +261,33 @@ nav {
 .t-green { color: var(--neon); }
 
 /* ─── SKILLS ─── */
+/* ─── SKILLS ─── */
 .skills-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
+}
+
+/* 1 column on mobile */
+@media (min-width: 500px) {
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 2 columns on tablet */
+@media (min-width: 768px) {
+  .skills-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+/* 3 columns on desktop */
+@media (min-width: 1024px) {
+  .skills-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 @media (min-width: 500px) { .skills-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 768px) { .skills-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; } }
